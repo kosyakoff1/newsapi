@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/layout_background"
-    tools:context=".NewsFragment">
+    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNews"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/svNews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp" />
+        android:background="@color/search_background" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible" />
+        android:background="@color/layout_background"
+        android:orientation="vertical"
+        tools:context=".NewsFragment">
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+</LinearLayout>

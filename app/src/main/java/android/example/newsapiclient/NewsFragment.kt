@@ -5,18 +5,20 @@ import android.example.newsapiclient.databinding.FragmentNewsBinding
 import android.example.newsapiclient.presentation.adapter.NewsAdapter
 import android.example.newsapiclient.presentation.viewmodel.NewsViewModel
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.Toast
-import androidx.core.os.bundleOf
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class NewsFragment : Fragment() {
 
@@ -56,6 +58,7 @@ class NewsFragment : Fragment() {
         }
         initRecyclerView()
         viewNewsList()
+        setSearchView()
     }
 
     private fun viewNewsList() {
@@ -94,10 +97,12 @@ class NewsFragment : Fragment() {
         }
     }
 
-    private fun initRecyclerView() = with(fragmentNewsBinding.rvNews) {
-        adapter = newsAdapter
-        layoutManager = LinearLayoutManager(activity)
-        addOnScrollListener(this@NewsFragment.onScrollListener)
+    private fun initRecyclerView() {
+        with(fragmentNewsBinding.rvNews) {
+            adapter = newsAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(onScrollListener)
+        }
     }
 
     private fun showProgressBar(): FragmentNewsBinding {
@@ -108,6 +113,67 @@ class NewsFragment : Fragment() {
     private fun hideProgressBar(): FragmentNewsBinding {
         isLoading = false
         return fragmentNewsBinding.apply { progressBar.isVisible = false }
+    }
+
+    private fun setSearchView() {
+        fragmentNewsBinding.svNews.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                viewModel.getSearchHeadLines("us", p0.toString(), 1)
+                viewSearchedNewsList()
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                MainScope().launch {
+                    delay(2000)
+                    viewModel.getSearchHeadLines("us", p0.toString(), 1)
+                    viewSearchedNewsList()
+                }
+                return false
+            }
+        })
+
+        fragmentNewsBinding.svNews.setOnCloseListener(SearchView.OnCloseListener {
+            initRecyclerView()
+            viewNewsList()
+            false
+        })
+    }
+
+    fun viewSearchedNewsList() {
+        viewModel.searchedNews.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let {
+                        newsAdapter.differ.submitList(it.articles)
+
+                        if (it.totalResults % 20 == 0) {
+                            pages = it.totalResults / 20
+                        } else {
+                            pages = it.totalResults / 20 + 1
+                        }
+
+                        isLastPage = page == pages
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let {
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.txt_error_occurred, it),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+
+        }
     }
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
