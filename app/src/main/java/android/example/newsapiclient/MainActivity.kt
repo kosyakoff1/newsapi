@@ -1,6 +1,7 @@
 package android.example.newsapiclient
 
 import android.example.newsapiclient.databinding.ActivityMainBinding
+import android.example.newsapiclient.presentation.adapter.NewsAdapter
 import android.example.newsapiclient.presentation.viewmodel.NewsViewModel
 import android.example.newsapiclient.presentation.viewmodel.NewsViewModelFactory
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var factory: NewsViewModelFactory
     //better use  val model: MyViewModel by viewModels()
     lateinit var viewModel: NewsViewModel
+
+    @Inject
+    lateinit var newsAdapter: NewsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
