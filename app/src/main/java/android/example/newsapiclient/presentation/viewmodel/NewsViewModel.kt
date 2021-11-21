@@ -4,25 +4,31 @@ import android.app.Application
 import android.content.Context
 import android.example.newsapiclient.R
 import android.example.newsapiclient.data.model.APIResponse
+import android.example.newsapiclient.data.model.Article
 import android.example.newsapiclient.data.util.Resource
-import android.example.newsapiclient.domain.GetNewsHeadlinesUseCase
-import android.example.newsapiclient.domain.GetSearchedNewsUseCase
+import android.example.newsapiclient.domain.*
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
     private val app: Application,
     private val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
     private val getSearchedNewsUseCase: GetSearchedNewsUseCase,
+    private val saveNewsUseCase: SaveNewsUseCase,
+    private val getSavedNewsUseCase: GetSavedNewsUseCase,
+    private val deleteSavedNewsUseCase: DeleteSavedNewsUseCase,
 ) : AndroidViewModel(app) {
 
     val searchedNews: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
+    val deletedNews: MutableLiveData<Unit> = MutableLiveData()
     val newsHeadLines: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
 
     fun getNewsHeadLines(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
@@ -37,6 +43,20 @@ class NewsViewModel(
             }
         } catch (e: Exception) {
             newsHeadLines.postValue(Resource.Error(e.message.toString()))
+        }
+    }
+
+    fun deleteArticle(article: Article) = viewModelScope.launch(Dispatchers.IO) {
+        deleteSavedNewsUseCase.execute(article)
+    }
+
+    fun saveArticle(article: Article) = viewModelScope.launch(Dispatchers.IO) {
+        saveNewsUseCase.execute(article)
+    }
+
+    fun getSavedNews() = liveData {
+        getSavedNewsUseCase.execute().collect {
+            emit(it)
         }
     }
 

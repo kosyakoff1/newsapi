@@ -1,8 +1,6 @@
 package android.example.newsapiclient.presentation.di
 
-import android.example.newsapiclient.domain.GetNewsHeadlinesUseCase
-import android.example.newsapiclient.domain.GetSearchedNewsUseCase
-import android.example.newsapiclient.domain.NewsRepository
+import android.example.newsapiclient.domain.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,5 +21,23 @@ class UseCaseModule {
     @Provides
     fun providesSearchedNewsHeadlinesUseCase(newsRepository: NewsRepository): GetSearchedNewsUseCase {
         return GetSearchedNewsUseCase(newsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesSaveNewsUseCase(newsRepository: NewsRepository): SaveNewsUseCase {
+        return SaveNewsUseCase(newsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGetSavedNewsUseCase(newsRepository: NewsRepository): GetSavedNewsUseCase {
+        return GetSavedNewsUseCase(newsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesDeleteSavedNewsUseCase(newsRepository: NewsRepository): DeleteSavedNewsUseCase {
+        return DeleteSavedNewsUseCase(newsRepository)
     }
 }

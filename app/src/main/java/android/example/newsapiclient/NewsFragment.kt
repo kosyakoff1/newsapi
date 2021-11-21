@@ -26,6 +26,7 @@ class NewsFragment : Fragment() {
     // Use the 'by activityViewModels()' Kotlin property delegate
     // from the fragment-ktx artifact
     //private val model: SharedViewModel by activityViewModels()
+    //TODO need to refactor paging and search
     private lateinit var viewModel: NewsViewModel
 
     private lateinit var fragmentNewsBinding: FragmentNewsBinding

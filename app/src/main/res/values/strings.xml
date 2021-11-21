@@ -9,4 +9,7 @@
     <string name="menu_lbl_saved_news">Saved News</string>
     <string name="txt_error_occurred">An error occurred: %1$s</string>
     <string name="txt_internet_not_available">Internet is not available</string>
+    <string name="txt_saved_successfully">Saved Successfully!</string>
+    <string name="txt_deleted_successfully">Deleted successfully!</string>
+    <string name="btn_undo">Undo</string>
 </resources>

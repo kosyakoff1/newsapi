@@ -1,7 +1,9 @@
 package android.example.newsapiclient.data.repository
 
+import android.example.newsapiclient.data.entity.ArticleEntity
 import android.example.newsapiclient.data.model.APIResponse
 import android.example.newsapiclient.data.model.Article
+import android.example.newsapiclient.data.repository.datasource.NewsLocalDataSource
 import android.example.newsapiclient.data.repository.datasource.NewsRemoteDataSource
 import android.example.newsapiclient.data.util.Resource
 import android.example.newsapiclient.domain.NewsRepository
@@ -10,6 +12,7 @@ import retrofit2.Response
 
 class NewsRepositoryImpl(
     private val newsRemoteDataSource: NewsRemoteDataSource,
+    private val newsLocalDataSource: NewsLocalDataSource,
 ) : NewsRepository {
 
     private fun responseToResult(response: Response<APIResponse>): Resource<APIResponse> {
@@ -40,14 +43,12 @@ class NewsRepositoryImpl(
     }
 
     override suspend fun saveNews(article: Article) {
-        TODO("Not yet implemented")
+        newsLocalDataSource.saveArticleToDB(article)
     }
 
     override suspend fun deleteNews(article: Article) {
-        TODO("Not yet implemented")
+        newsLocalDataSource.deleteArticleFromDB(ArticleEntity.fromModel(article))
     }
 
-    override fun getSavedNews(): Flow<List<Article>> {
-        TODO("Not yet implemented")
-    }
+    override fun getSavedNews(): Flow<List<Article>> = newsLocalDataSource.getSavedArticles()
 }

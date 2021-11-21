@@ -6,8 +6,9 @@ import java.io.Serializable
 
 
 data class Article(
+    val id: Int?,
     @SerializedName("author")
-    val author: String,
+    val author: String?,
     @SerializedName("content")
     val content: String,
     @SerializedName("description")
