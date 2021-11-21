@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">News api client</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lbl_news_fragment">news fragment</string>
+    <string name="lbl_saved_fragment">saved fragment</string>
+    <string name="lbl_info_fragment">info fragment</string>
+    <string name="menu_lbl_news_headlines">News Headlines</string>
+    <string name="menu_lbl_saved_news">Saved News</string>
 </resources>
