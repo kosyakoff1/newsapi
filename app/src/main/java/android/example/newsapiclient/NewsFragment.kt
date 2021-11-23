@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +39,11 @@ class NewsFragment : Fragment() {
     private var isLoading = false
     private var isLastPage = false
     private var pages = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -128,8 +134,11 @@ class NewsFragment : Fragment() {
             override fun onQueryTextChange(p0: String?): Boolean {
                 MainScope().launch {
                     delay(2000)
-                    viewModel.getSearchHeadLines("us", p0.toString(), 1)
-                    viewSearchedNewsList()
+                    if (!isDetached) {
+                        viewModel.getSearchHeadLines("us", p0.toString(), 1)
+                        viewSearchedNewsList()
+                    }
+
                 }
                 return false
             }
